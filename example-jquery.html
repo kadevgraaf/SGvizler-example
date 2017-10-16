@@ -1,0 +1,50 @@
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<style type="text/css">
+
+</style>
+</head>
+    <script type="text/javascript">
+var query = [
+
+"PREFIX rdfs:		<http://www.w3.org/2000/01/rdf-schema#>",
+"PREFIX dbo:		<http://dbpedia.org/ontology/>",
+"PREFIX dbpedia:	<http://dbpedia.org/resource/>",
+"SELECT DISTINCT ?capital ?area",
+"WHERE {",
+"	VALUES ",
+"?capital { dbpedia:Amsterdam dbpedia:Berlin } .",
+"	?country dbo:capital	?capital.",
+"	?capital dbo:areaTotal	?area .",
+"}"
+].join(" ");
+
+var url = 'https://dbpedia.org/sparql';
+var queryUrl = url+"?query="+ encodeURIComponent(query) +"&format=json";
+
+    $.ajax({
+        dataType: "jsonp",
+        url: queryUrl,
+        success: function( _data ) {
+            var results = _data.results.bindings;
+            //print_r(results);
+            document.getElementById('results').innerHTML = results + "<br/><br/>";
+            document.getElementById('results').innerHTML += JSON.stringify(results, null, 4) + "<br/><br/>";
+            for ( var i in results ) {
+                //var res = results[i].abstract.value;
+                document.getElementById('results').innerHTML += results[i].capital.value + '   -   area size = ' + results[i].area.value + "<br/>";
+            }
+        }
+    });
+</script>
+    <body>
+        <h1>Jquery example</h1>
+        <a href="index.html" target="_blank">Example 1</a><br/>
+        <a href="example2.html" target="_blank">example 2</a><br/>
+        <a href="example3.html" target="_blank">example 3</a><br/>
+        <a href="example4.html" target="_blank">example 4</a><br/><br/>
+        <div id='results'></div>
+    </body>
+
+</html>
